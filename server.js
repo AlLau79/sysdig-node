@@ -1,4 +1,4 @@
-const Prometheus = require('prom-client')
+const Prometheus = require('prom-client');
 const express = require('express');
 const http = require('http');
 
@@ -9,6 +9,11 @@ const requestHistogram = new Prometheus.Histogram({
     help: 'Duration of HTTP requests in seconds',
     labelNames: ['code', 'handler', 'method'],
     buckets: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5]
+})
+
+const counter = new Prometheus.Counter({
+  name: 'counter',
+  help: 'also-counter',
 })
 
 const requestTimer = (req, res, next) => {
@@ -37,7 +42,8 @@ app.get('/ready', (req, res) => res.status(200).json({status:"ok"}));
 app.get('/live', (req, res) => res.status(200).json({status:"ok"}));
 app.get('/metrics', (req, res, next) => {
   res.set('Content-Type', Prometheus.register.contentType)
-  res.end(Prometheus.register.message("This is a teeeeest"), Prometheus.register.metrics())
+  counter.inc()
+  res.end(Prometheus.register.metrics())
 })
 
 // Time routes after here.
