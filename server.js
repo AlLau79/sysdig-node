@@ -37,8 +37,8 @@ app.get('/ready', (req, res) => res.status(200).json({status:"ok"}));
 app.get('/live', (req, res) => res.status(200).json({status:"ok"}));
 app.get('/metrics', (req, res, next) => {
   res.set('Content-Type', Prometheus.register.contentType)
-  res.write("This is a testtooooo")
-  res.end(Prometheus.register.metrics())
+  res.write(Prometheus.register.metrics())
+  res.end(Prometheus.register.message("This is a teeeeest"))
 })
 
 // Time routes after here.
