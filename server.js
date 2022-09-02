@@ -2,6 +2,9 @@ const Prometheus = require('prom-client');
 const express = require('express');
 const http = require('http');
 
+const prom_gc = require('prometheus-gc-stats');
+prom_gc();
+
 Prometheus.collectDefaultMetrics();
 
 const requestHistogram = new Prometheus.Histogram({
