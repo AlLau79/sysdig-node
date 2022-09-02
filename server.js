@@ -16,7 +16,7 @@ const requestHistogram = new Prometheus.Histogram({
 
 const counter = new Prometheus.Counter({
   name: 'counter',
-  help: 'also-counter',
+  help: 'Increments the counter every time you visit /metrics. Reset the counter by visiting /',
 })
 
 const requestTimer = (req, res, next) => {
@@ -59,6 +59,7 @@ const pino = require('pino')({
 app.use(require('pino-http')({logger: pino}));
 
 app.get('/', (req, res) => {
+  counter.reset();
   // Use req.log (a `pino` instance) to log JSON:
   req.log.info({message: 'Hello from Node.js Starter Application!'});
   res.send('Hello from Node.js Starter Application!');
