@@ -45,7 +45,6 @@ app.get('/ready', (req, res) => res.status(200).json({status:"ok"}));
 app.get('/live', (req, res) => res.status(200).json({status:"ok"}));
 app.get('/metrics', (req, res, next) => {
   res.set('Content-Type', Prometheus.register.contentType)
-  counter.inc()
   res.end(Prometheus.register.metrics())
 })
 
@@ -66,6 +65,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('*', (req, res) => {
+  counter.inc()
   res.status(404).send("Not Found");
 });
 
