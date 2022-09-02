@@ -69,7 +69,7 @@ app.get('*', (req, res) => {
 });
 
 // Listen and serve.
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`App started on PORT ${PORT}`);
 });
