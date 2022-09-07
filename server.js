@@ -74,10 +74,10 @@ app.get('/:state/:client', (req, res) => {
       labelNames: ['client', 'connected'],
     });
 
-    if (state == 1){
+    if (req.params.state == 1){
       connected.labels(req.params.client, true);
     }
-    else if (state == 0){
+    else if (req.params.state == 0){
       connected.labels(req.params.client, false);
     }
     Prometheus.register.registerMetric(connected);
