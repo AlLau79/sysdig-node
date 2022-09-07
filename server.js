@@ -67,20 +67,22 @@ app.get('/', (req, res) => {
 });
 
 // :client is the name , state is the game (1 for 'log in' 0 for 'log out')
-app.get('/:state/:client', (req, res) => {
-    const connected = new Prometheus.Gauge({
-      name: `custom_${req.params.client}_status`,
-      help: "keeps a 'boolean' value to track which 'clients' are connected to the service",
-      labelNames: ['client', 'connected'],
-    });
-
+app.get('/?client/:state', (req, res) => {
+  const connected = new Prometheus.Gauge({
+    name: `custom_${req.params.client}_status`,
+    help: "keeps a 'boolean' value to track which 'clients' are connected to the service",
+    labelNames: [req.params.client],
+    collect(){
+      connected.set(1);
+    },
+  });
     if (req.params.state == 1){
-      connected.labels(req.params.client, true);
+      connected.set(req.params.client, 1)
     }
     else if (req.params.state == 0){
-      connected.labels(req.params.client, false);
+      connected.set(req.params.client, 0);
     }
-    Prometheus.register.registerMetric(connected);
+    //Prometheus.register.registerMetric(connected);
 });
 
 app.get('*', (req, res) => {
