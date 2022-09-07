@@ -17,7 +17,9 @@ const requestHistogram = new Prometheus.Histogram({
 const counter = new Prometheus.Counter({
   name: 'custom_metric_counter',
   help: 'Increments the counter every time you visit a broke endpoint. Reset the counter by visiting /',
+  aggregator: 'sum'
 })
+
 
 const requestTimer = (req, res, next) => {
   const path = new URL(req.url, `http://${req.hostname}`).pathname
@@ -62,6 +64,23 @@ app.get('/', (req, res) => {
   // Use req.log (a `pino` instance) to log JSON:
   req.log.info({message: 'Hello from Node.js Starter Application!'});
   res.send('Hello from Node.js Starter Application!');
+});
+
+// :client is the name , state is the game (1 for 'log in' 0 for 'log out')
+app.get('/:state/:client', (req, res) => {
+    const connected = new Prometheus.Gauge({
+      name: `custom_${req.params.client}_status`,
+      help: "keeps a 'boolean' value to track which 'clients' are connected to the service",
+      labelNames: ['client', 'connected'],
+    });
+
+    if (state == 1){
+      connected.labels(req.params.client, true);
+    }
+    else if (state == 0){
+      connected.labels(req.params.client, false);
+    }
+    Prometheus.register.registerMetric(connected);
 });
 
 app.get('*', (req, res) => {
