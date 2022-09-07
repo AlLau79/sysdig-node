@@ -15,8 +15,8 @@ const requestHistogram = new Prometheus.Histogram({
 })
 
 const counter = new Prometheus.Counter({
-  name: 'counter',
-  help: 'Increments the counter every time you visit /metrics. Reset the counter by visiting /',
+  name: 'custom_metric_counter',
+  help: 'Increments the counter every time you visit a broke endpoint. Reset the counter by visiting /',
 })
 
 const requestTimer = (req, res, next) => {
