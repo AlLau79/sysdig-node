@@ -17,7 +17,6 @@ const requestHistogram = new Prometheus.Histogram({
 const counter = new Prometheus.Counter({
   name: 'custom_metric_counter',
   help: 'Increments the counter every time you visit a broke endpoint. Reset the counter by visiting /',
-  aggregator: 'sum'
 })
 
 
@@ -67,11 +66,12 @@ app.get('/', (req, res) => {
 });
 
 // :client is the name , state is the game (1 for 'log in' 0 for 'log out')
-app.get('/?client/:state', (req, res) => {
+app.get('/:client/:state', (req, res) => {
+  //Prometheus.Registry
   const connected = new Prometheus.Gauge({
-    name: `custom_${req.params.client}_status`,
+    name: `custom_${req.query.client}_status`,
     help: "keeps a 'boolean' value to track which 'clients' are connected to the service",
-    labelNames: [req.params.client],
+    labelNames: [req.query.client],
     collect(){
       connected.set(1);
     },
@@ -85,8 +85,12 @@ app.get('/?client/:state', (req, res) => {
     //Prometheus.register.registerMetric(connected);
 });
 
-app.get('*', (req, res) => {
+app.get('/inc', (req, res) => {
   counter.inc()
+  res.status(200).send("Counter be counting");
+});
+
+app.get('*', (req, res) => {
   res.status(404).send("Not Found");
 });
 
