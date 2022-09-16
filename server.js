@@ -65,17 +65,16 @@ app.get('/', (req, res) => {
   res.send('Hello from Node.js Starter Application!');
 });
 
+const connected = new Prometheus.Gauge({
+  name: `custom_string_metric`,
+  help: "keeps a 'boolean' value to track which 'clients' are connected to the service",
+  labelNames: ['Name'],
+});
 // :client is the name , we will be able to find this client Name as the handler in sysdig
 app.get('/:client', (req, res) => {
   //Prometheus.Registry
-  const connected = new Prometheus.Gauge({
-    name: `custom_string_metric`,
-    help: "keeps a 'boolean' value to track which 'clients' are connected to the service",
-    labelNames: ['Name'],
-    collect(){
-      connected.labels({Name: req.params.client})
-    },
-  });
+  connected.labels({Name: req.params.client})
+
   res.send(`Hello, ${req.params.client}`)
 });
 
