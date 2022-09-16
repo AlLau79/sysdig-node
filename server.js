@@ -73,7 +73,8 @@ const connected = new Prometheus.Gauge({
 // :client is the name , we will be able to find this client Name as the handler in sysdig
 app.get('/:client', (req, res) => {
   //Prometheus.Registry
-  connected.labels({Name: req.params.client})
+  connected.labels({Name: req.params.client});
+  connected.set(3);
 
   res.send(`Hello, ${req.params.client}`)
 });
