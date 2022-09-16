@@ -65,26 +65,21 @@ app.get('/', (req, res) => {
   res.send('Hello from Node.js Starter Application!');
 });
 
-// :client is the name , state is the game (1 for 'log in' 0 for 'log out')
-app.get('/:client/:state', (req, res) => {
+// :client is the name , we will be able to find this client Name as the handler in sysdig
+app.get('/:client', (req, res) => {
   //Prometheus.Registry
   const connected = new Prometheus.Gauge({
-    name: `custom_${req.query.client}_status`,
+    name: `custom_string_metric`,
     help: "keeps a 'boolean' value to track which 'clients' are connected to the service",
-    labelNames: [req.query.client],
+    labelNames: ['Name'],
     collect(){
-      connected.set(1);
+      connected.labels({Name: req.params.client})
     },
   });
-    if (req.params.state == 1){
-      connected.set(req.params.client, 1)
-    }
-    else if (req.params.state == 0){
-      connected.set(req.params.client, 0);
-    }
-    //Prometheus.register.registerMetric(connected);
+  res.send(`Hello, ${req.params.client}`)
 });
 
+//increments the counter
 app.get('/inc', (req, res) => {
   counter.inc()
   res.status(200).send("Counter be counting");
