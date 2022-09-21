@@ -85,13 +85,15 @@ app.get('/inc', (req, res) => {
   res.status(200).send("Counter be counting");
 });
 
+app.get('/alert', (req, res) => {
+  res.status(200).send("This is a test for the LogDNA alert system");
+});
+
 app.get('*', (req, res) => {
   res.status(404).send("Not Found");
 });
 
-app.get('/alert', (req, res) => {
-  res.status(200).send("This is a test for the LogDNA alert system");
-});
+
 
 // Listen and serve.
 const PORT = process.env.PORT || 3001;
